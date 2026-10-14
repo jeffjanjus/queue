@@ -3,151 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>虚拟排队系统</title>
+    <title>请稍候，您已进入排队系统</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            text-align: center;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f3f4f6;
             margin: 0;
-        }
-        .queue-card {
-            max-width: 450px;
-            margin: 40px auto;
-            background: white;
-            padding: 35px 25px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
-        h1 {
-            font-size: 24px;
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
-        
-        /* 状态看板样式 */
-        .status-container {
+            padding: 0;
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .queue-container {
+            background: white;
+            max-width: 480px;
+            width: 90%;
+            padding: 40px 30px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            text-align: center;
+            border-top: 6px solid #2563eb;
+        }
+        .logo { font-size: 24px; font-weight: bold; color: #1f2937; margin-bottom: 20px; }
+        .headline { font-size: 20px; font-weight: 600; color: #111827; margin-bottom: 10px; }
+        .message { color: #4b5563; font-size: 14px; margin-bottom: 30px; line-height: 1.5; }
+        
+        /* 进度条 */
+        .progress-container {
+            background-color: #e5e7eb;
+            border-radius: 9999px;
+            height: 12px;
+            width: 100%;
             margin-bottom: 30px;
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 12px;
+            overflow: hidden;
         }
-        .status-item {
-            flex: 1;
-        }
-        .status-label {
-            font-size: 13px;
-            color: #95a5a6;
-            margin-bottom: 5px;
-        }
-        .status-value {
-            font-size: 22px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        .status-value.highlight {
-            color: #e74c3c;
+        .progress-bar {
+            background-color: #2563eb;
+            height: 100%;
+            width: 0%;
+            transition: width 1s linear;
         }
 
-        /* 按钮样式 */
-        .btn-join {
-            width: 100%;
-            background-color: #3498db;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-            transition: all 0.2s ease;
+        /* 数据看板 */
+        .grid-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+            text-align: left;
         }
-        .btn-join:hover {
-            background-color: #2980b9;
-            transform: translateY(-1px);
+        .stat-box {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
         }
-        
-        /* 个人排队状态 */
-        .user-ticket {
-            margin-top: 25px;
-            padding: 20px;
-            border: 2px dashed #3498db;
-            border-radius: 12px;
-            background-color: #ebf5fb;
-            display: none;
-            animation: fadeIn 0.5s ease;
+        .stat-label { font-size: 12px; color: #6b7280; text-transform: uppercase; margin-bottom: 5px; }
+        .stat-value { font-size: 16px; font-weight: bold; color: #1f2937; }
+
+        /* 旋转加载动画 */
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2563eb;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .ticket-num {
-            font-size: 32px;
-            font-weight: bold;
-            color: #2980b9;
-            margin: 10px 0;
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div class="queue-card">
-        <h1>现场排队候位</h1>
-        <p class="subtitle">请加入队列，我们将在轮到您时发出通知</p>
+<div class="queue-container">
+    <div class="logo">✦ 线上商城服务</div>
+    <div class="spinner"></div>
+    <div class="headline">您正在虚拟等候室中</div>
+    <div class="message">由于当前访问量巨大，为了保证您的交易安全，我们正在限制进入人数。请不要刷新或关闭此页面，轮到您时系统会自动跳转。</div>
 
-        <!-- 整体排队状况 -->
-        <div class="status-container">
-            <div class="status-item" style="border-right: 1px solid #eee;">
-                <div class="status-label">当前等待人数</div>
-                <div id="current-wait" class="status-value">5 组</div>
-            </div>
-            <div class="status-item">
-                <div class="status-label">预计等待时间</div>
-                <div id="wait-time" class="status-value highlight">~15 分钟</div>
-            </div>
-        </div>
-
-        <!-- 互动按钮 -->
-        <button id="join-btn" class="btn-join" onclick="enterQueue()">点击取号排队</button>
-
-        <!-- 成功加入队列后显示的号码牌 -->
-        <div id="ticket" class="user-ticket">
-            <div style="font-size: 14px; color: #7f8c8d;">您的排队号码</div>
-            <div id="ticket-id" class="ticket-num">#1006</div>
-            <p id="welcome-msg" style="margin: 5px 0 0 0; font-size: 15px; font-weight: 500;"></p>
-            <p style="font-size: 12px; color: #95a5a6; margin-top: 10px;">请截屏保存此界面，静候呼叫。</p>
-        </div>
+    <!-- 进度条 -->
+    <div class="progress-container">
+        <div id="progress" class="progress-bar"></div>
     </div>
 
-    <script>
-        function enterQueue() {
-            const name = prompt("请输入您的姓名/昵称以加入排队：");
-            
-            if (name && name.trim() !== "") {
-                // 模拟生成排队号码和更新看板
-                document.getElementById('welcome-msg').innerText = "您好 " + name + "，已成功锁定席位！";
-                document.getElementById('ticket-id').innerText = "#" + Math.floor(1000 + Math.random() * 9000);
-                
-                // 更新看板数据（模拟前面多了一个人）
-                document.getElementById('current-wait').innerText = "6 组";
-                document.getElementById('wait-time').innerText = "~20 分钟";
-                
-                // 显示号码牌，隐藏按钮
-                document.getElementById('ticket').style.display = "block";
-                document.getElementById('join-btn').style.display = "none";
-            }
+    <!-- 排队核心数据 -->
+    <div class="grid-stats">
+        <div class="stat-box">
+            <div class="stat-label">您的排队号码</div>
+            <div id="queue-number" class="stat-value">--</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">预计等待时间</div>
+            <div id="time-left" class="stat-value">计算中...</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">在您前面的人数</div>
+            <div id="users-ahead" class="stat-value">--</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">最后更新时间</div>
+            <div id="last-update" class="stat-value">刚刚</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 配置项
+    const TARGET_URL = "https://google.com"; // 队列结束后真正跳转的目标网站
+    const TOTAL_WAIT_SECONDS = 60; // 模拟总共需要排队多少秒（例如60秒）
+
+    // 初始化或读取现有的排队状态
+    let startTime = localStorage.getItem('queue_start_time');
+    let myNumber = localStorage.getItem('queue_number');
+
+    if (!startTime) {
+        startTime = Date.now();
+        myNumber = Math.floor(15000 + Math.random() * 5000); // 随机生成一个排队序号
+        localStorage.setItem('queue_start_time', startTime);
+        localStorage.setItem('queue_number', myNumber);
+    }
+
+    document.getElementById('queue-number').innerText = "#" + myNumber;
+
+    function updateQueue() {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const remaining = TOTAL_WAIT_SECONDS - elapsed;
+
+        if (remaining <= 0) {
+            // 排队结束，清除本地缓存并跳转
+            localStorage.removeItem('queue_start_time');
+            localStorage.removeItem('queue_number');
+            window.location.href = TARGET_URL;
+            return;
         }
-    </script>
+
+        // 计算进度条百分比
+        const progressPercent = (elapsed / TOTAL_WAIT_SECONDS) * 100;
+        document.getElementById('progress').style.width = progressPercent + "%";
+
+        // 计算前方人数和剩余时间
+        const aheadCount = Math.ceil((remaining / TOTAL_WAIT_SECONDS) * (myNumber % 500));
+        document.getElementById('users-ahead').innerText = aheadCount + " 人";
+        
+        const minutes = Math.floor(remaining / 60);
+        const seconds = remaining % 60;
+        document.getElementById('time-left').innerText = minutes > 0 ? `${minutes} 分 ${seconds} 秒` : `${seconds} 秒`;
+
+        // 刷新最后更新时间
+        const now = new Date();
+        document.getElementById('last-update').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+    }
+
+    // 每秒钟刷新一次排队状态
+    setInterval(updateQueue, 1000);
+    updateQueue();
+</script>
 
 </body>
 </html>
