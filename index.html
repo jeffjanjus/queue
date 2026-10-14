@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我们的婚礼邀请函</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #fff5f5;
+            color: #4a4a4a;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 { color: #d9534f; font-size: 28px; }
+        .names { font-size: 24px; font-weight: bold; margin: 20px 0; color: #333; }
+        .details { font-size: 16px; line-height: 1.6; margin-bottom: 30px; }
+        
+        /* 排队/报到按钮样式 */
+        .queue-btn {
+            display: inline-block;
+            background-color: #d9534f;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            padding: 15px 32px;
+            font-size: 16px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(217, 83, 79, 0.3);
+            transition: all 0.3s ease;
+        }
+        .queue-btn:hover {
+            background-color: #c9302c;
+            transform: translateY(-2px);
+        }
+        .status-message {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #2b542c;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>诚挚邀请</h1>
+        <div class="names">新郎 ❤️ 新娘</div>
+        
+        <div class="details">
+            <p><strong>日期：</strong>2026年XX月XX日</p>
+            <p><strong>时间：</strong>中午 12:00</p>
+            <p><strong>地点：</strong>某某大酒店宴会厅</p>
+            <p>期待您的光临，见证我们的幸福时刻！</p>
+        </div>
+
+        <!-- 互动排队/报到按钮 -->
+        <button class="queue-btn" onclick="joinQueue()">点击排队报到 / 签到</button>
+        <p id="status" class="status-message"></p>
+    </div>
+
+    <script>
+        function joinQueue() {
+            // 这里可以替换为你真实的表单或排队链接（如 Google Forms、Typeform 或 WhatsApp）
+            // 目前设置为点击后在网页上直接显示“报到成功”
+            const name = prompt("请输入您的姓名以完成签到：");
+            if (name) {
+                document.getElementById('status').innerText = "🎉 谢谢你，" + name + "！您已成功报到进场。";
+                document.getElementById('status').style.display = "block";
+                
+                // 如果你想让新娘新郎在后台收到通知，可以在这里跳转到外部链接，例如：
+                // window.location.href = "https://wa.me" + encodeURIComponent(name + " 已到达婚礼现场！");
+            }
+        }
+    </script>
+
+</body>
+</html>
